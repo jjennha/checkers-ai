@@ -78,15 +78,17 @@ public class Player {
 			if(isValid(p.x+1,p.y-1,b)){ // go down left
 				movesForP.addMove(new Pair(p.x+1,p.y-1,board[p.x+1][p.y-1]));
 			}
-			if(isValid(p.x+2,p.y+2,b)&&(board[p.x+1][p.y+1]!=type && board[p.x+1][p.y+1]!=Board.EMPTY)){ // go down right skip
+			if(isValid(p.x+2,p.y+2,b)&&(board[p.x+1][p.y+1]!=type && board[p.x+1][p.y+1]!=type+2 && board[p.x+1][p.y+1]!=type-2 && board[p.x+1][p.y+1]!=Board.EMPTY)){ // go down right skip
 				Pair next = new Pair(p.x+2,p.y+2,board[p.x+2][p.y+2]);
 				next.skips = new Pair(p.x+1,p.y+1,board[p.x+1][p.y+1]);
 				movesForP.addMove(next);
+				movesForP.hasSkip = true;
 			}
-			if(isValid(p.x+2,p.y-2,b)&&(board[p.x+1][p.y-1]!=type && board[p.x+1][p.y-1]!=Board.EMPTY)){ // go down left skip
+			if(isValid(p.x+2,p.y-2,b)&&(board[p.x+1][p.y-1]!=type && board[p.x+1][p.y-1]!=type+2 && board[p.x+1][p.y-1]!=type-2 && board[p.x+1][p.y-1]!=Board.EMPTY)){ // go down left skip
 				Pair next = new Pair(p.x+2,p.y-2,board[p.x+2][p.y-2]);
 				next.skips = new Pair(p.x+1,p.y-1,board[p.x+1][p.y-1]);
 				movesForP.addMove(next);
+				movesForP.hasSkip = true;
 			}
 			if(type==kType){
 				if(isValid(p.x-1,p.y+1,b)){ // go up right
@@ -95,15 +97,17 @@ public class Player {
 				if(isValid(p.x-1,p.y-1,b)){ // go up left
 					movesForP.addMove(new Pair(p.x-1,p.y-1,board[p.x-1][p.y-1]));
 				}
-				if(isValid(p.x-2,p.y+2,b)&&(board[p.x-1][p.y+1]!=type && board[p.x-1][p.y+1]!=Board.EMPTY)){ // go up right skip
+				if(isValid(p.x-2,p.y+2,b)&&(board[p.x-1][p.y+1]!=type && board[p.x-1][p.y+1]!=type+2 && board[p.x-1][p.y+1]!=type-2 && board[p.x-1][p.y+1]!=Board.EMPTY)){ // go up right skip
 					Pair next = new Pair(p.x-2,p.y+2,board[p.x-2][p.y+2]);
 					next.skips = new Pair(p.x-1,p.y+1,board[p.x-1][p.y+1]);
 					movesForP.addMove(next);
+					movesForP.hasSkip = true;
 				}
-				if(isValid(p.x-2,p.y-2,b)&&(board[p.x-1][p.y-1]!=type && board[p.x-1][p.y-1]!=Board.EMPTY)){ // go up left skip
+				if(isValid(p.x-2,p.y-2,b)&&(board[p.x-1][p.y-1]!=type && board[p.x-1][p.y-1]!=type+2 && board[p.x-1][p.y-1]!=type-2 && board[p.x-1][p.y-1]!=Board.EMPTY)){ // go up left skip
 					Pair next = new Pair(p.x-2,p.y-2,board[p.x-2][p.y-2]);
 					next.skips = new Pair(p.x-1,p.y-1,board[p.x-1][p.y-1]);
 					movesForP.addMove(next);
+					movesForP.hasSkip = true;
 				}
 			}
 			moves.add(movesForP);
@@ -127,15 +131,17 @@ public class Player {
 			if(isValid(p.x-1,p.y-1,b)){ // go up left
 				movesForP.addMove(new Pair(p.x-1,p.y-1,board[p.x-1][p.y-1]));
 			}
-			if(isValid(p.x-2,p.y+2,b)&&(board[p.x-1][p.y+1]!=type && board[p.x-1][p.y+1]!=Board.EMPTY)){ // go up right skip
+			if(isValid(p.x-2,p.y+2,b)&&(board[p.x-1][p.y+1]!=type && board[p.x-1][p.y+1]!=type+2 && board[p.x-1][p.y+1]!=type-2 && board[p.x-1][p.y+1]!=Board.EMPTY)){ // go up right skip
 				Pair next = new Pair(p.x-2,p.y+2,board[p.x-2][p.y+2]);
 				next.skips = new Pair(p.x-1,p.y+1,board[p.x-1][p.y+1]);
 				movesForP.addMove(next);
+				movesForP.hasSkip = true;
 			}
-			if(isValid(p.x-2,p.y-2,b)&&(board[p.x-1][p.y-1]!=type && board[p.x-1][p.y-1]!=Board.EMPTY)){ // go up left skip
+			if(isValid(p.x-2,p.y-2,b)&&(board[p.x-1][p.y-1]!=type && board[p.x-1][p.y-1]!=type+2 && board[p.x-1][p.y-1]!=type-2 && board[p.x-1][p.y-1]!=Board.EMPTY)){ // go up left skip
 				Pair next = new Pair(p.x-2,p.y-2,board[p.x-2][p.y-2]);
 				next.skips = new Pair(p.x-1,p.y-1,board[p.x-1][p.y-1]);
 				movesForP.addMove(next);
+				movesForP.hasSkip = true;
 			}
 			if(type==kType){
 				if(isValid(p.x+1,p.y+1,b)){ // go down right
@@ -144,15 +150,17 @@ public class Player {
 				if(isValid(p.x+1,p.y-1,b)){ // go down left
 					movesForP.addMove(new Pair(p.x+1,p.y-1,board[p.x+1][p.y-1]));
 				}
-				if(isValid(p.x+2,p.y+2,b)&&(board[p.x+1][p.y+1]!=type && board[p.x+1][p.y+1]!=Board.EMPTY)){ // go down right skip
+				if(isValid(p.x+2,p.y+2,b)&&(board[p.x+1][p.y+1]!=type && board[p.x+1][p.y+1]!=type+2 && board[p.x+1][p.y+1]!=type-2 && board[p.x+1][p.y+1]!=Board.EMPTY)){ // go down right skip
 					Pair next = new Pair(p.x+2,p.y+2,board[p.x+2][p.y+2]);
 					next.skips = new Pair(p.x+1,p.y+1,board[p.x+1][p.y+1]);
 					movesForP.addMove(next);
+					movesForP.hasSkip = true;
 				}
-				if(isValid(p.x+2,p.y-2,b)&&(board[p.x+1][p.y-1]!=type && board[p.x+1][p.y-1]!=Board.EMPTY)){ // go down left skip
+				if(isValid(p.x+2,p.y-2,b)&&(board[p.x+1][p.y-1]!=type && board[p.x+1][p.y-1]!=type+2 && board[p.x+1][p.y-1]!=type-2 && board[p.x+1][p.y-1]!=Board.EMPTY)){ // go down left skip
 					Pair next = new Pair(p.x+2,p.y-2,board[p.x+2][p.y-2]);
 					next.skips = new Pair(p.x+1,p.y-1,board[p.x+1][p.y-1]);
 					movesForP.addMove(next);
+					movesForP.hasSkip = true;
 				}
 			}
 			moves.add(movesForP);
@@ -160,10 +168,22 @@ public class Player {
 		return moves;
 	}
 	public List<Move> findValidMoves(Board b){
+		List<Move> moves = new LinkedList<>();
+		List<Move> containSkips = new LinkedList<>();
 		if(pType == Board.P1){
-			return startFromTop(b);
+			moves = startFromTop(b);
 		}else{
-			return startFromBottom(b);
+			moves = startFromBottom(b);
+		}
+		for(Move m: moves){
+			if(m.hasSkip){
+				containSkips.add(m);
+			}
+		}
+		if(containSkips.size()>0){
+			return containSkips;
+		}else{
+			return moves;
 		}
 	}
 	private List<Pair> getCurrentPos(Board c){

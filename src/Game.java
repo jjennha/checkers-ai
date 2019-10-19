@@ -16,7 +16,7 @@ class Move { //Potential Moves
 	Pair from;
 	Pair chosen;
 	List<Pair> to;
-	
+	boolean hasSkip;
 	int numMoves;
 	public Move(Pair f){
 		from = f;
