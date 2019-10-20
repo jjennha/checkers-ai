@@ -35,8 +35,12 @@ class ClassAgent extends Player{
 	static int nType = Board.N1;
 	static int kType = Board.K1;
 	static int pType = Board.P1;
-	public ClassAgent(){
+	int depth;
+	int totalMoves;
+	int skips;
+	public ClassAgent(int d){
 		super(nType,kType,pType);
+		depth = d;
 	}
 	private Board copy(Board b){
 		Board copy = new Board();
@@ -71,7 +75,6 @@ class ClassAgent extends Player{
 	}
 	public int alphabeta(Board b, int depth, int alpha, int beta, boolean min){
 		if(depth == 0){
-//			return score-plScore;
 			return score;
 		}
 		if(min){
@@ -114,13 +117,16 @@ class ClassAgent extends Player{
 		int resultValue = Integer.MIN_VALUE;
 		for(Move m: findValidMoves(b)){
 			for(Pair p: m.to){
-				int value = alphabeta(b,5,Integer.MIN_VALUE,Integer.MAX_VALUE,true);
+				int value = alphabeta(b,depth,Integer.MIN_VALUE,Integer.MAX_VALUE,true);
 				if(value > resultValue){
 					m.chosen = p;
 					best = m;
 					resultValue = value;
 				}
 			}
+		}
+		if(best!=null&&best.hasSkip){
+			skips++;
 		}
 		return best;
 	}
@@ -133,9 +139,10 @@ public class Game {
 	Board board;
 	int current;
 	Scanner in;
-	public Game(Player p){
-		this.ai = new ClassAgent();
-		this.player = p;
+	Random r = new Random();
+	public Game(int level){
+		this.ai = new ClassAgent(level);
+		this.player = new Player();
 		this.current = Board.P2;
 		this.board = new Board();
 		in = new Scanner(System.in);
@@ -144,8 +151,7 @@ public class Game {
 		board.print();
 		Move nextMove = null;
 		if(current == Board.P1){
-			List<Move> validMoves = ai.findValidMoves(board);
-//			ai.printValidMoves(validMoves);
+			ai.totalMoves++;
 			nextMove = ai.chooseMove(board);
 		}else{
 			List<Move> validMoves = player.findValidMoves(board);
@@ -153,6 +159,7 @@ public class Game {
 			System.out.print("\nEnter: ");
 			int num;
 			num = in.nextInt();
+//			num = r.nextInt(validMoves.size());
 			nextMove = player.chooseMove(validMoves, num);
 		}
 		if(nextMove!=null){
@@ -210,7 +217,8 @@ public class Game {
 			}
 		}
 		if(ai.findValidMoves(board).isEmpty() || player.findValidMoves(board).isEmpty()){
-			System.out.println("AI: "+ai.score+" | PLAYER: "+player.score);
+			System.out.println("Score // AI: "+ai.score+" | PLAYER: "+player.score);
+			System.out.println("Moves // total "+ai.totalMoves+" | skips: "+ai.skips);
 			if(ai.score > player.score){
 				return 1;
 			}else{
@@ -222,7 +230,7 @@ public class Game {
 	}
 	public static void main(String[] args) {
 		Player user = new Player();
-		Game game = new Game(user);
+		Game game = new Game(4);
 		
 		int winner = game.getWinner();
 		while(winner==0){
@@ -232,76 +240,4 @@ public class Game {
 		System.out.println(winner +" wins!");
 	}
 }
-/*
- * 
- * 	public List<Pair> findValidMovesAsPairs(Board b){
-		List<Pair> result = new LinkedList<>();
-		List<Move> moves = findValidMoves(b);
-		for(Move m: moves){
-			for(Pair p: m.to){
-				result.add(p);
-			}
-		}
-		return result;
-	}
-	public List<Move> findValidMoves(Board b){
-		List<Move> moves = new LinkedList<>();
-		List<Pair> current = getCurrentPos(b);
-		int[][] board = b.getBoard();
-		for(Pair p: current){
-			int type = p.type;
-			Move movesForP = new Move(p);
-			if(type!=Board.N1 || type!=Board.K1){
-				continue;
-			}
-			if(isValid(p.x+1,p.y+1,b)){ // go down right
-				movesForP.addMove(new Pair(p.x+1,p.y+1,type));
-			}
-			if(isValid(p.x-1,p.y+1,b)){ // go down left
-				movesForP.addMove(new Pair(p.x-1,p.y+1,type));
-			}
-			if(isValid(p.x+2,p.y+2,b)&&(board[p.x+1][p.y+1]==nType||board[p.x+1][p.y+1]==kType)){ // go down right skip
-				movesForP.addMove(new Pair(p.x+2,p.y+2,type));
-			}
-			if(isValid(p.x-2,p.y+2,b)&&(board[p.x-1][p.y+1]==nType||board[p.x-1][p.y+1]==kType)){ // go down left skip
-				movesForP.addMove(new Pair(p.x-2,p.y+2,type));
-			}
-			if(type==Board.K1){
-				if(isValid(p.x+1,p.y-1,b)){ // go up right
-					movesForP.addMove(new Pair(p.x+1,p.y-1,type));
-				}
-				if(isValid(p.x-1,p.y-1,b)){ // go up left
-					movesForP.addMove(new Pair(p.x-1,p.y-1,type));
-				}
-				if(isValid(p.x+2,p.y-2,b)&&(board[p.x+1][p.y-1]==nType||board[p.x+1][p.y-1]==kType)){ // go up right skip
-					movesForP.addMove(new Pair(p.x+2,p.y-2,type));
-				}
-				if(isValid(p.x-2,p.y-2,b)&&(board[p.x-1][p.y-1]==nType||board[p.x-1][p.y-1]==kType)){ // go up left skip
-					movesForP.addMove(new Pair(p.x-2,p.y-2,type));
-				}
-			}
-			moves.add(movesForP);
-		}
-		return moves;
-	}
-	private List<Pair> getCurrentPos(Board c){
-		int[][] board = c.getBoard();
-		List<Pair> current = new LinkedList<>();
-		for(int i=0;i<board.length;i++){
-			for(int j=0;j<board.length;j++){
-				if(board[i][j]==Board.N1 || board[i][j]==Board.K1){
-					current.add(new Pair(i,j,board[i][j]));
-				}
-			}
-		}
-		return current;
-	}
-	private boolean isValid(int x, int y,Board b){
-		if(x<0||y<0||x>=b.sizeX||y>=b.sizeY||b.getBoard()[x][y]!=Board.EMPTY){
-			return false;
-		}
-		return true;
-	}
- * 
- * 
- * */
+

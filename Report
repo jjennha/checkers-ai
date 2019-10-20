@@ -1,0 +1,34 @@
+Level: 1 - Player wins
+Score // AI: 6 | PLAYER: 12
+Moves // total: 27 | skip: 6
+
+Level: 2 - Player wins
+Score // AI: 2 | PLAYER: 12
+Moves // total 18 | skips: 2
+
+Level: 3 - Player wins
+// AI: 6 | PLAYER: 12
+Moves // total 479 | skips: 6
+
+Level:4 - Player wins
+Score // AI: 5 | PLAYER: 12
+Moves // total 26 | skips: 5
+
+Level: 5 - Player wins
+Score // AI: 8 | PLAYER: 12
+Moves // total: 1256 | skip: 8
+
+Level: 6 - Player wins
+Score // AI: 8 | PLAYER: 12
+Moves // total 308 | skips: 8
+
+Level 7: Player wins
+Score // AI: 8 | PLAYER: 12
+Moves // total 43 | skips: 8
+
+I tested my function at varying depths from 1 to 7.
+
+I found that as my depth increased, my AI was able to stay alive longer and gain more points.
+The tradeoff for having a better AI was that running the algorithm took much longer.  
+
+It should be noted that I used a random generator to generate the choice of move imitating the user during testing.
