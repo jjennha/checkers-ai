@@ -38,27 +38,93 @@ class ClassAgent extends Player{
 	public ClassAgent(){
 		super(nType,kType,pType);
 	}
-	
-	public void play(Board b){
-		nextMove(b);
-	}
-	public Move nextMove(Board current){
-		return chooseMove(findValidMoves(current));
-	}
-	public Move chooseMove(List<Move> moves){
-		System.out.println(moves.size());
-		for(Move m: moves){
-			if(m.to.size()>0){
-				m.chosen = m.to.get(0);
-				return m;
+	private Board copy(Board b){
+		Board copy = new Board();
+		int[][] c = new int[8][8];
+		for(int i=0;i<b.sizeX;i++){
+			for(int j=0;j<b.sizeY;j++){
+				c[i][j] = b.getBoard()[i][j];
 			}
 		}
-		return null;
+		copy.board = c;
+		return copy;
 	}
-	
-	public int evaluate(Board board){
-		return 0;
+
+	public int applyMove(Board board, Move move, int sc){
+		int[][] bArr = board.getBoard();
+		if(move.chosen.skips!=null){
+			sc++;
+			Pair skip = move.chosen.skips;
+			bArr[skip.x][skip.y] = Board.EMPTY;
+		}
+		
+		Pair from = move.from;
+		Pair to = move.chosen;
+		
+		if(to.x==7){
+			from.type = Board.K1;
+		}
+		
+		bArr[from.x][from.y] = to.type;
+		bArr[to.x][to.y] = from.type;
+		return sc;
 	}
+	public int alphabeta(Board b, int depth, int alpha, int beta, boolean min){
+		if(depth == 0){
+//			return score-plScore;
+			return score;
+		}
+		if(min){
+			int score = Integer.MAX_VALUE;
+			for(Move m: findValidMoves(b)){
+				for(Pair p: m.to){
+					m.chosen = p;
+					Board copy = copy(b);
+					int sc = score;
+					sc = applyMove(copy,m,sc);
+					score  = Math.max(alphabeta(copy,depth-1,alpha,beta,false), score);
+					alpha = Math.max(alpha, score);
+					if(alpha>=beta){
+						break;
+					}
+				}	
+			}
+			return score;
+		}else{
+			int score = Integer.MIN_VALUE;
+			for(Move m: findValidMoves(b)){
+				for(Pair p: m.to){
+					m.chosen = p;
+					Board copy = copy(b);
+					int sc = score;
+					sc = applyMove(copy,m,sc);
+					score  = Math.min(alphabeta(copy,depth-1,alpha,beta,true), score);
+					beta = Math.max(beta, score);
+					if(alpha>=beta){
+						break;
+					}
+				}	
+			}
+			return score;
+		}
+	}
+
+	public Move chooseMove(Board b){
+		Move best = null;
+		int resultValue = Integer.MIN_VALUE;
+		for(Move m: findValidMoves(b)){
+			for(Pair p: m.to){
+				int value = alphabeta(b,5,Integer.MIN_VALUE,Integer.MAX_VALUE,true);
+				if(value > resultValue){
+					m.chosen = p;
+					best = m;
+					resultValue = value;
+				}
+			}
+		}
+		return best;
+	}
+
 }
 
 public class Game {
@@ -79,8 +145,8 @@ public class Game {
 		Move nextMove = null;
 		if(current == Board.P1){
 			List<Move> validMoves = ai.findValidMoves(board);
-			ai.printValidMoves(validMoves);
-			nextMove = ai.chooseMove(validMoves);
+//			ai.printValidMoves(validMoves);
+			nextMove = ai.chooseMove(board);
 		}else{
 			List<Move> validMoves = player.findValidMoves(board);
 			player.printValidMoves(validMoves);
@@ -103,6 +169,11 @@ public class Game {
 		}
 		int[][] bArr = board.getBoard();
 		if(move.chosen.skips!=null){
+			if(current == Board.P2){
+				player.score++;
+			}else{
+				ai.score++;
+			}
 			Pair skip = move.chosen.skips;
 			bArr[skip.x][skip.y] = Board.EMPTY;
 			nextPlayer = current;
@@ -138,22 +209,27 @@ public class Game {
 				}
 			}
 		}
-		if(ai.findValidMoves(board).isEmpty()){
-			return 2; // player wins
+		if(ai.findValidMoves(board).isEmpty() || player.findValidMoves(board).isEmpty()){
+			System.out.println("AI: "+ai.score+" | PLAYER: "+player.score);
+			if(ai.score > player.score){
+				return 1;
+			}else{
+				return 2;
+			}
 		}
-		if(contains1){
-			return 1; // ai wins
-		}
-		return 2;
+		
+		return 0;
 	}
 	public static void main(String[] args) {
 		Player user = new Player();
 		Game game = new Game(user);
 		
-		
-		while(game.getWinner()==0){
+		int winner = game.getWinner();
+		while(winner==0){
 			game.play();
+			winner = game.getWinner();
 		}
+		System.out.println(winner +" wins!");
 	}
 }
 /*

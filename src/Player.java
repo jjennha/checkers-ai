@@ -5,7 +5,7 @@ public class Player {
 	int nType = Board.N2;
 	int kType = Board.K2;
 	int pType = Board.P2;
-	
+	int score;
 	public Player(){
 		
 	}
@@ -13,6 +13,7 @@ public class Player {
 		nType = n;
 		kType = k;
 		pType = p;
+		score = 0;
 	}
 	
 	public List<Pair> findValidMovesAsPairs(Board b){
@@ -177,6 +178,13 @@ public class Player {
 		}
 		for(Move m: moves){
 			if(m.hasSkip){
+				List<Pair> copy = new LinkedList<>();
+				for(Pair sk: m.to){
+					if(sk.skips!=null){
+						copy.add(sk);
+					}
+				}
+				m.to = copy;
 				containSkips.add(m);
 			}
 		}
